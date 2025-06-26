@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 public class PostDto {
-    private Long id;
+    private long id;
     private String title;
     private String content;
     private String author;
