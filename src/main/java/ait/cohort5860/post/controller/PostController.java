@@ -1,0 +1,64 @@
+package ait.cohort5860.post.controller;
+
+import ait.cohort5860.post.dto.NewCommentDto;
+import ait.cohort5860.post.dto.NewPostDto;
+import ait.cohort5860.post.dto.PostDto;
+import ait.cohort5860.post.service.PostService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/forum")
+public class PostController  {
+    private final PostService postService;
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/post/{user}")
+    public PostDto addNewPost(@PathVariable String user,@RequestBody NewPostDto newPostDto) {
+        return postService.addNewPost(user,newPostDto);
+    }
+
+   @GetMapping("/post/{postId}")
+    public PostDto findPostById(@PathVariable Long postId) {
+        return postService.findPostById(postId);
+    }
+    @PatchMapping("/post/{postId}/like")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void addLike(@PathVariable Long postId) {
+    postService.addLike(postId);
+    }
+
+    @PatchMapping("/post/{postId}")
+    public PostDto updatePost(@PathVariable Long postId, @RequestBody NewPostDto newPostDto) {
+        return postService.updatePost(postId,newPostDto);
+    }
+
+    @DeleteMapping("/post/{postId}")
+    public PostDto deletePost(@PathVariable Long postId) {
+        return postService.deletePost(postId);
+    }
+
+    @PatchMapping("/post/{postId}/comment/{commenter}")
+    public PostDto addComment(@PathVariable Long postId,@PathVariable  String commenter,@RequestBody NewCommentDto newCommentDto) {
+        return postService.addComment(postId,commenter,newCommentDto);
+    }
+
+    @GetMapping("/posts/author/{user}")
+    public Iterable<PostDto> findPostsByAuthor(@PathVariable String user) {
+        return postService.findPostsByAuthor(user);
+    }
+
+    @GetMapping("/posts/tags")
+    public Iterable<PostDto> findPostsByTags(@RequestParam("values") List<String> tags) {
+        return postService.findPostsByTags(tags);
+    }
+
+    @GetMapping("/posts/period")
+    public Iterable<PostDto> findPostsByPeriod(@RequestParam("dateFrom") LocalDate datefrom,@RequestParam("dateTo") LocalDate dateto) {
+        return postService.findPostsByPeriod(datefrom,dateto);
+    }
+}
